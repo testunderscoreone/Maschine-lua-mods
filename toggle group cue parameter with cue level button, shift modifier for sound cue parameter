@@ -1,0 +1,53 @@
+function MaschineStudioController:onLevelSourceButton(Pressed, Button)
+
+    if not Pressed then
+        return
+    end
+
+    if Button == NI.HW.BUTTON_LEVEL_CUE or Button == NI.HW.BUTTON_LEVEL_MASTER then
+        local Workspace = App:getWorkspace()
+        NI.DATA.ParameterAccess.setBoolParameterNoUndo(
+            App,
+            Workspace:getMixerCueVisibleParameter(),
+            Button == NI.HW.BUTTON_LEVEL_CUE
+        )
+    end
+
+    -- allow both normal and SHIFT-modified CUE
+    if Button == NI.HW.BUTTON_LEVEL_CUE or self:getShiftPressed() then
+
+        local GroupIndex = NI.DATA.StateHelper.getFocusGroupIndex(App) 
+        local StateCache = App:getStateCache()
+        local Group = NI.DATA.StateHelper.getFocusGroup(App)
+        local Sounds = Group and Group:getSounds() or nil
+
+        SoundIndex = NI.DATA.StateHelper.getFocusSoundIndex(App)
+        local Sound = Sounds and SoundIndex >=0 and Sounds:at(SoundIndex)
+        local SoundParam = Sound and Sound:getCueEnabledParameter()
+        local GroupParam = Group and Group:getCueEnabledParameter()
+
+        if self:getShiftPressed() then
+            -- SHIFT → toggle SOUND cue
+            if SoundParam then
+                local newValue = not SoundParam:getValue()
+                LEDHelper.setLEDState(NI.HW.LED_TEMPO, newValue and LEDHelper.LS_ON or LEDHelper.LS_OFF)
+                NI.DATA.ParameterAccess.setBoolParameterNoUndo(App, SoundParam, newValue)
+            end
+        else
+            -- Normal → toggle GROUP cue
+            if GroupParam then
+                local newValue = not GroupParam:getValue()
+                LEDHelper.setLEDState(NI.HW.LED_TEMPO, newValue and LEDHelper.LS_ON or LEDHelper.LS_OFF)
+                NI.DATA.ParameterAccess.setBoolParameterNoUndo(App, GroupParam, newValue)
+            end
+        end
+    end
+
+    if self.ActivePage and self.ActivePage.onLevelSourceButton and
+        self.ActivePage:onLevelSourceButton(Pressed, Button) then
+        return
+    end
+
+    self.LevelMeter:onLevelSourceButton(Pressed, Button)
+
+end
