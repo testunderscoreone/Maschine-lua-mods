@@ -699,7 +699,7 @@ function MaschineStudioController:onLevelSourceButton(Pressed, Button)
         )
     end
 
-    -- ✅ ONLY handle cue logic when CUE button is pressed
+    -- ONLY handle cue logic when CUE button is pressed
     if Button == NI.HW.BUTTON_LEVEL_CUE then
 
         local GroupIndex = NI.DATA.StateHelper.getFocusGroupIndex(App) 
