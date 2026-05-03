@@ -159,7 +159,7 @@ end
 
 function LevelMeterStudio:onTimer()
 
-    -- 🔥 BLINK STATE (shared timer)
+    -- BLINK STATE (shared timer)
     self.BlinkCounter = (self.BlinkCounter or 0) + 1
     if self.BlinkCounter % 8 == 0 then
         self.BlinkState = not self.BlinkState
@@ -215,7 +215,7 @@ function LevelMeterStudio:onTimer()
 
         end
 
-        -- 🔥 Cue parameters
+        -- Cue parameters
         local Sound = NI.DATA.StateHelper.getFocusSound(App)
         local SoundParam = Sound and Sound:getCueEnabledParameter()
         local GroupParam = Group and Group:getCueEnabledParameter()
@@ -228,7 +228,7 @@ function LevelMeterStudio:onTimer()
         LEDHelper.setLEDState(NI.HW.LED_LEVEL_MASTER,
             Source == NI.DATA.LEVEL_SOURCE_MASTERCUE and not CueVisible and LEDHelper.LS_BRIGHT or LEDHelper.LS_OFF)
 
-        -- ✅ GROUP LED
+        -- GROUP LED
         LEDHelper.setLEDState(NI.HW.LED_LEVEL_GROUP,
             (GroupCue and (
                 (Source == NI.DATA.LEVEL_SOURCE_GROUP and (phase and LEDHelper.LS_BRIGHT or LEDHelper.LS_DIM)) or
@@ -238,7 +238,7 @@ function LevelMeterStudio:onTimer()
             or LEDHelper.LS_OFF
         )
 
-        -- ✅ SOUND LED
+        -- SOUND LED
         LEDHelper.setLEDState(NI.HW.LED_LEVEL_SOUND,
             (SoundCue and (
                 (Source == NI.DATA.LEVEL_SOURCE_SOUND and (phase and LEDHelper.LS_BRIGHT or LEDHelper.LS_DIM)) or
